@@ -32,7 +32,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 @Config
-@Autonomous(name = "MALEK SWILAM CURRENT AUTO ", group = "Autonomous")
+@Autonomous(name = "369 FINAL AUTO COMP CODE ", group = "Autonomous")
 public class MalekAuto extends LinearOpMode {
 
     private int chamberHeight = 2115;
@@ -407,26 +407,26 @@ public class MalekAuto extends LinearOpMode {
 //                .turnTo(new Rotation2d(drive.getPoseEstimate().heading.toDouble(), Math.toRadians(180)));
 
         TrajectoryActionBuilder forawrdDrive1 = drive.actionBuilder(startPose1)
-                .strafeTo(new Vector2d(-10,-25.5));
+                .strafeTo(new Vector2d(-10,-23));
 
         // move back so we can strafe to samples
         TrajectoryActionBuilder moveBack1 = forawrdDrive1.endTrajectory().fresh()//drive.actionBuilder(new Pose2d(-2,-26.5,3*Math.PI/2))
                 .lineToY(-40);
 
         TrajectoryActionBuilder moveRightThenMoveForward= moveBack1.endTrajectory().fresh()//drive.actionBuilder(new Pose2d(-2,-45,3*Math.PI/2))
-                .strafeToConstantHeading(new Vector2d(51,-40))// move right
+                .strafeToConstantHeading(new Vector2d(54,-40))// move right
 
-                .strafeToConstantHeading(new Vector2d(51,0))// move forward
+                .strafeToConstantHeading(new Vector2d(58,0))// move forward
 
-                .strafeToConstantHeading(new Vector2d(60,0))// move right and a bit back
+                .strafeToConstantHeading(new Vector2d(70,0))// move right and a bit back
 
-                .strafeToConstantHeading(new Vector2d(60,-51), new TranslationalVelConstraint(400))// push the first specimen down
+                .strafeToConstantHeading(new Vector2d(70,-45), new TranslationalVelConstraint(400))// push the first specimen down
 
-                .strafeToConstantHeading(new Vector2d(60,2), new TranslationalVelConstraint(400))// go back up
+                .strafeToConstantHeading(new Vector2d(70,2), new TranslationalVelConstraint(400))// go back up
 
-                .strafeToConstantHeading(new Vector2d(75,0))// allign to the second sample
+                .strafeToConstantHeading(new Vector2d(86,0))// allign to the second sample
 
-                .strafeToConstantHeading(new Vector2d(75,-51), new TranslationalVelConstraint(400)); // push the second down
+                .strafeToConstantHeading(new Vector2d(86,-45), new TranslationalVelConstraint(400)); // push the second down
 
         // includecode below if we have time to grab the third one
 
@@ -442,28 +442,28 @@ public class MalekAuto extends LinearOpMode {
         TrajectoryActionBuilder goToGrabFirst = moveRightThenMoveForward.endTrajectory().fresh()//drive.actionBuilder(new Pose2d(60,-50,3*Math.PI/2))
                 .strafeToConstantHeading(new Vector2d(60, -33)) //get out of obervation
 //
-                .strafeToLinearHeading(new Vector2d(50, -76.5), Math.toRadians(85));// goto grab the first one while turning
+                .strafeToLinearHeading(new Vector2d(47, -76), Math.toRadians(85));// goto grab the first one while turning
 
 
         TrajectoryActionBuilder goToClipFirst = goToGrabFirst.endTrajectory().fresh()
                 .strafeToLinearHeading(new Vector2d(10,-28), Math.toRadians(270))
-                .strafeToConstantHeading(new Vector2d(14,-21.5));     //less forward
+                .strafeToConstantHeading(new Vector2d(18,-25));     //less forward
 
         TrajectoryActionBuilder goToGrabSecond = drive.actionBuilder(new Pose2d(0,-25,3*Math.PI/2))
-                .strafeToLinearHeading(new Vector2d(54, -65), Math.toRadians(90))
-                .strafeToConstantHeading(new Vector2d(55, -76));//
+                .strafeToLinearHeading(new Vector2d(55, -65), Math.toRadians(85))
+                .strafeToConstantHeading(new Vector2d(58, -74));//
 
         TrajectoryActionBuilder goToClipSecond = drive.actionBuilder(new Pose2d(37,-60,Math.PI/2))
-                .strafeToLinearHeading(new Vector2d(6, -44), Math.toRadians(270))
-                .strafeToConstantHeading(new Vector2d(6, -28)); // too far back
+                .strafeToLinearHeading(new Vector2d(6, -40), Math.toRadians(270))
+                .strafeToConstantHeading(new Vector2d(5, -39)); // too far back
 
         TrajectoryActionBuilder goToGrabThird = drive.actionBuilder(new Pose2d(4,-25,3*Math.PI/2))
-                .strafeToLinearHeading(new Vector2d(60, -70), Math.toRadians(95))
-                .strafeToConstantHeading(new Vector2d(61, -91)); //
+                .strafeToLinearHeading(new Vector2d(56, -70), Math.toRadians(95))
+                .strafeToConstantHeading(new Vector2d(56, -93)); //
 
         TrajectoryActionBuilder goToClipThird = drive.actionBuilder(new Pose2d(37,-60,Math.PI/2))
                 .strafeToLinearHeading(new Vector2d(0, -50), Math.toRadians(270))
-                .strafeToConstantHeading(new Vector2d(1, -33));//
+                .strafeToConstantHeading(new Vector2d(5, -35));//
 
 
 //        TrajectoryActionBuilder goToGrabFourth = drive.actionBuilder(new Pose2d(8,-25,3*Math.PI/2))
@@ -805,7 +805,6 @@ steps:
                         )
                 )
  */
-
 
 
 

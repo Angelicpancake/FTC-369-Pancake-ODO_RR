@@ -12,16 +12,17 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-@TeleOp(name="current fc with old intake")
-public class FinalCombinedFC extends OpMode {
+@TeleOp(name="369 FINAL TELE-OP COMP CODE")
+public class FinalCombinedFCC extends OpMode {
     private DcMotor backLeft;
     private DcMotor backRight;
     private DcMotor frontLeft;
     private DcMotor frontRight;
+
     private ElapsedTime timer;
 
-    private double DRIVE_POWER_VARIABLE = 1;
-    private double pow = 0.5;
+    private double DRIVE_POWER_VARIABLE = 0.92;
+    private double pow = 0.7;
     private boolean SLOW_MODE = false;
 
 
@@ -44,7 +45,7 @@ public class FinalCombinedFC extends OpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     // Arm position constants
-    private static final double ARM_POWER_SCALE = 0.7;
+    private static final double ARM_POWER_SCALE = 0.6;
     private static final int ARM_LOWER_LIMIT = -5000;
     private static final int ARM_UPPER_LIMIT = 7000;
 
@@ -84,7 +85,7 @@ public class FinalCombinedFC extends OpMode {
         slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         slideClaw = hardwareMap.get(Servo.class, "slideClaw");
-
+        timer = new ElapsedTime();
 
         // Initialize arm motor
         arm = hardwareMap.get(DcMotor.class, "arm");
@@ -108,14 +109,11 @@ public class FinalCombinedFC extends OpMode {
         imu.resetYaw();
 
         telemetry.addLine("Hardware Initialized");
-        timer = new ElapsedTime();
         telemetry.update();
     }
 
     @Override
     public void loop() {
-        telemetry.addData("slidePosition", slide.getCurrentPosition());
-        telemetry.addData("arm", arm.getCurrentPosition());
         // Get drive inputs (negated Y because joystick Y is reversed)
         double x = gamepad1.left_stick_x;
         double y = -gamepad1.left_stick_y;  // Negated to match standard coordinate system
@@ -141,7 +139,6 @@ public class FinalCombinedFC extends OpMode {
         frontRight.setPower(frontRightPower * DRIVE_POWER_VARIABLE);
         backLeft.setPower(backLeftPower * DRIVE_POWER_VARIABLE);
         backRight.setPower(backRightPower * DRIVE_POWER_VARIABLE);
-
 
 
         handleArmControl();
@@ -196,6 +193,8 @@ public class FinalCombinedFC extends OpMode {
         if ((currentPosition >= ARM_UPPER_LIMIT && armPower > 0) ||
                 (currentPosition <= ARM_LOWER_LIMIT && armPower < 0)) {
             armPower = 0;
+        } else if (gamepad2.b) {
+            armPower = 0.05;
         }
 
         arm.setPower(armPower);
@@ -259,30 +258,19 @@ public class FinalCombinedFC extends OpMode {
     private void handleWrist(){
         if(gamepad2.dpad_up)
             wrist.setPosition(1);
-        else if (gamepad2.dpad_left)
+        else if (gamepad2.dpad_left) {
             wrist.setPosition(0.35);
-        else if(gamepad2.dpad_down && wrist.getPosition()!=0)
+        } else if(gamepad2.dpad_down)
             wrist.setPosition(0);
-       else if(gamepad2.dpad_right) { //preset
-           timer.reset();
-           wrist.setPosition(0);
-           while (timer.seconds() < 1.5)
-               arm.setPower(0.5);
+        else if(gamepad2.dpad_right) { //preset
+            timer.reset();
+            wrist.setPosition(0);
+            while (timer.seconds() < 1.5)
+                arm.setPower(0.4);
 
-           arm.setPower(0);
+            arm.setPower(0);
 
         }
-
-    }
-
-    public void placeSpecimen() {
-        slide.setTargetPosition(2222);
-        slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        timer.reset();
-        while (timer.seconds() <1.5)
-            slide.setPower(1);
-        slide.setPower(0);
     }
 
     private void handleLinearSlideControl() {
@@ -292,32 +280,34 @@ public class FinalCombinedFC extends OpMode {
 
         // Linear slide control using right joystick on gamepad2
         double slidePower = -gamepad2.right_stick_y;
-
-
-        if  (gamepad2.x) {
-            placeSpecimen();
+        if (Math.abs(slidePower) > 0.15){
+            slide.setPower(slidePower);
         }
-        else if (gamepad2.y){
-            slide.setTargetPosition(chamberHeight);
-            slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            slide.setPower(1.0);
-        } else if (gamepad2.a){
-            slide.setTargetPosition(grabFromWallHeight);
-            slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            slide.setPower(1.0);
-        } else if (Math.abs(slidePower) > 0.2) {
-            slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            // Check upper and lower limits
-            if ((currentPosition >= 2750 && slidePower > 0) ||
-                    (currentPosition <= 3 && slidePower < 0)) {
-                slide.setPower(0.01); // Hold position
-            } else {
-                slide.setPower(slidePower * power);
-            }
-        } else {
-            slide.setPower(0);
 
-        }
+
+
+        // old complicated cpmtrl for slide, taken out becasue slide wont end at the bottom in auto
+//        if (gamepad2.y){
+//            slide.setTargetPosition(chamberHeight);
+//            slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            slide.setPower(1.0);
+//        } else if (gamepad2.a){
+//            slide.setTargetPosition(grabFromWallHeight);
+//            slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            slide.setPower(1.0);
+//        } else if (Math.abs(slidePower) > 0.2) {
+//            slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            // Check upper and lower limits
+//            if ((currentPosition >= 2750 && slidePower > 0) ||
+//                    (currentPosition <= 3 && slidePower < 0)) {
+//                slide.setPower(0.01); // Hold position
+//            } else {
+//                slide.setPower(slidePower * power);
+//            }
+//        } else {
+//            slide.setPower(0);
+//
+//        }
 
 
 //        if (gamepad2.y){

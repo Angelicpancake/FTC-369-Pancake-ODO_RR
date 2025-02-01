@@ -40,7 +40,8 @@ public class JoshuaRenAuto2_1 extends LinearOpMode {
             specimenClaw = hardwareMap.get(Servo.class, "specimenClaw");
             rail = hardwareMap.get(Servo.class, "rail");
 
-            specimenClaw.setPosition(0.8);//start SpecimenClaw closed
+            specimenClaw.setPosition(0);//start SpecimenClaw open
+            rail.setPosition(0);//rail set down
         }//Constructor
 
         public class CloseSpecimenClaw implements Action{
@@ -93,7 +94,7 @@ public class JoshuaRenAuto2_1 extends LinearOpMode {
 
                 //change these positions if needed
 
-                if (timer.seconds() > 0.5){isReset = false;
+                if (timer.seconds() > 0.7){isReset = false;
                     specimenClaw.setPosition(0);//open SpecimenClaw
                     return false;
                 }
@@ -120,42 +121,42 @@ public class JoshuaRenAuto2_1 extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        Pose2d initialPose = new Pose2d(10, -62, Math.toRadians(90));
+        Pose2d initialPose = new Pose2d(25, -62, Math.toRadians(90));
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose); //initialize drive
         BridgeArmClaw bac = new BridgeArmClaw(hardwareMap);//initial all servos
 
         //Trajectories
-        TrajectoryActionBuilder placeSample0T = drive.actionBuilder(initialPose)
-                .strafeToConstantHeading(new Vector2d(-1, -31));
-
-        TrajectoryActionBuilder pushT = placeSample0T.endTrajectory().fresh()
-                .strafeToConstantHeading(new Vector2d(26, -42))
-                .splineToConstantHeading(new Vector2d(43, -12), Math.toRadians(30))
+        TrajectoryActionBuilder pushSamplesTraj = drive.actionBuilder(initialPose)
+                .splineToConstantHeading(new Vector2d(40, -13), Math.toRadians(73))
                 .strafeToConstantHeading(new Vector2d(43, -50))
                 .splineToConstantHeading(new Vector2d(53, -13), Math.toRadians(10))
                 .strafeToConstantHeading(new Vector2d(53,-50))
-                .splineToConstantHeading(new Vector2d(63, -13), Math.toRadians(10))
-                .strafeToConstantHeading(new Vector2d(63, -50));
+                .splineToConstantHeading(new Vector2d(61, -13), Math.toRadians(10))
+                .strafeToConstantHeading(new Vector2d(61, -50))
+                .splineToConstantHeading(new Vector2d(35, -62), Math.toRadians(240));
 
-        TrajectoryActionBuilder specimen1T = pushT.endTrajectory().fresh()
-                .strafeToConstantHeading(new Vector2d(38, -65))
+        TrajectoryActionBuilder specimen1Traj = pushSamplesTraj.endTrajectory().fresh()
+                //  .strafeToConstantHeading(new Vector2d(38, -65))
+                .strafeToConstantHeading(new Vector2d(-5, -31));
+
+        TrajectoryActionBuilder specimen2Traj = specimen1Traj.endTrajectory().fresh()
+                .strafeToConstantHeading(new Vector2d(35, -62))
                 .strafeToConstantHeading(new Vector2d(-4, -31));
 
-        TrajectoryActionBuilder specimen2T = specimen1T.endTrajectory().fresh()
-                .strafeToConstantHeading(new Vector2d(38, -65))
+        TrajectoryActionBuilder specimen3Traj = specimen2Traj.endTrajectory().fresh()
+                .strafeToConstantHeading(new Vector2d(35, -62))
                 .strafeToConstantHeading(new Vector2d(-2, -31));
 
-        TrajectoryActionBuilder specimen3T = specimen2T.endTrajectory().fresh()
-                .strafeToConstantHeading(new Vector2d(38, -65))
+        TrajectoryActionBuilder specimen4Traj = specimen3Traj.endTrajectory().fresh()
+                .strafeToConstantHeading(new Vector2d(35, -62))
                 .strafeToConstantHeading(new Vector2d(0, -31));
 
-        TrajectoryActionBuilder specimen4T = specimen3T.endTrajectory().fresh()
-
-                .strafeToConstantHeading(new Vector2d(38, -65))
+        TrajectoryActionBuilder specimen5Traj = specimen4Traj.endTrajectory().fresh()
+                .strafeToConstantHeading(new Vector2d(35, -62))
                 .strafeToConstantHeading(new Vector2d(1, -31));
 
-        TrajectoryActionBuilder parkT = specimen4T.endTrajectory().fresh()
+        TrajectoryActionBuilder parkTraj = specimen4Traj.endTrajectory().fresh()
                 .strafeToConstantHeading(new Vector2d(38,-65));
 
         waitForStart();//wait until start is pressed
@@ -164,54 +165,63 @@ public class JoshuaRenAuto2_1 extends LinearOpMode {
 
         //Sequential Actions + Parallel
 
-        /*hang specimen0 (starting specimen)
-          1. extend rail and swing specimenArm
-          2. drive forward
-          3. open claw */
-        SequentialAction hangSpecimen0 = new SequentialAction(
-                new ParallelAction(
-                        bac.hangSpecimen(),
-                        placeSample0T.build()
-                )
-        );
-
         /* push samples (3 samples)
             1. reset rail and swing arm back
             2. do the driving path
          */
         SequentialAction pushSamples = new SequentialAction(
                 new ParallelAction(
-                        bac.resetRailArm(),
-                        pushT.build()
+                        pushSamplesTraj.build()
                 )
         );
 
-        /* Clip Specimen #1 (pre-wall specimen) (repeat 1-4)
+        /* Clip Specimen #1 (pre-wall specimen) (repeat 1-5)
             1. close claw (claw should already be opened)
             2. go to hang specimen then come back
          */
 
         SequentialAction hangSpecimen1 = new SequentialAction(
                 bac.closeSpecimenClaw(),
-                specimen1T.build()
+                new ParallelAction() (
+                    specimen1Traj.build()
+                    bac.hangSpecimen()
+                )
+
         );
         SequentialAction hangSpecimen2 = new SequentialAction(
                 bac.closeSpecimenClaw(),
-                specimen2T.build()
+                new ParallelAction()(
+                    specimen2Traj.build()
+                    bac.hangSpecimen()
+                )
         );
         SequentialAction hangSpecimen3 = new SequentialAction(
                 bac.closeSpecimenClaw(),
-                specimen3T.build()
+                new ParallelAction()(
+                    specimen3Traj.build()
+                    bac.hangSpecimen()
+                )
         );
         SequentialAction hangSpecimen4 = new SequentialAction(
                 bac.closeSpecimenClaw(),
-                specimen4T.build()
+                new ParallelAction()(
+                    specimen4Traj.build()
+                    bac.hangSpecimen()
+                )
+        );
+
+        SequentialAction hangSpecimen5 = new SequentialAction(
+                bac.closeSpecimenClaw(),
+                new ParallelAction()(
+                        specimen5Traj.build()
+                        bac.hangSpecimen()
+                )
         );
 
         // Park
 
         SequentialAction park = new SequentialAction(
-            parkT.build()
+            parkTraj.build()
         );
 
 
@@ -219,12 +229,12 @@ public class JoshuaRenAuto2_1 extends LinearOpMode {
         //run actions
         Actions.runBlocking(
                 new SequentialAction(
-                        hangSpecimen0,
                         pushSamples,
                         hangSpecimen1,
                         hangSpecimen2,
                         hangSpecimen3,
                         hangSpecimen4,
+                        hangSpecimen5,
                         park
                 )
         );

@@ -56,7 +56,7 @@ public class JoshuaRenAuto2_1 extends LinearOpMode {
 
                 if (timer.seconds() > 0.5) return false;
 
-                return false;
+                return true;
             }
         }//CloseSpecimenArm
 

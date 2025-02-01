@@ -71,7 +71,7 @@ public class JoshuaRenAuto2_1 extends LinearOpMode {
                     isReset = true;
                 }
 
-                if (isReset && timer.seconds() > 0.5) return false;//exit after reset
+                if (timer.seconds() > 0.5) return false;//exit after reset
 
                 return true;
             }

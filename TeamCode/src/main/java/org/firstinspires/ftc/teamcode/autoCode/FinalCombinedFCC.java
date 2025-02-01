@@ -1,10 +1,8 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.autoCode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -79,10 +77,7 @@ public class FinalCombinedFCC extends OpMode {
 
 
         // Initialize linear slide motor and claw
-        slide = hardwareMap.get(DcMotor.class, "slide");
-        slide.setDirection(DcMotor.Direction.REVERSE);
-        slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
 
         slideClaw = hardwareMap.get(Servo.class, "slideClaw");
         timer = new ElapsedTime();
@@ -147,7 +142,18 @@ public class FinalCombinedFCC extends OpMode {
         handleArmClawControl();
 
 
-        handleLinearSlideControl();
+        double power = 1;
+        int currentPosition = slide.getCurrentPosition();
+
+        // Linear slide control using right joystick on gamepad2
+        double slidePower = gamepad2.right_stick_y;
+        if (slidePower > 0.15)
+            slide.setPower(1);//with the assistance of go
+
+        telemetry.addData("slide", currentPosition);
+
+
+
 
         handleSlideClawControl();
 
@@ -273,65 +279,4 @@ public class FinalCombinedFCC extends OpMode {
         }
     }
 
-    private void handleLinearSlideControl() {
-        // Use right joystick for linear slide control
-        double power = 1;
-        int currentPosition = slide.getCurrentPosition();
-
-        // Linear slide control using right joystick on gamepad2
-        double slidePower = -gamepad2.right_stick_y;
-        if (Math.abs(slidePower) > 0.15){
-            slide.setPower(slidePower);
-        }
-
-
-
-        // old complicated cpmtrl for slide, taken out becasue slide wont end at the bottom in auto
-//        if (gamepad2.y){
-//            slide.setTargetPosition(chamberHeight);
-//            slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            slide.setPower(1.0);
-//        } else if (gamepad2.a){
-//            slide.setTargetPosition(grabFromWallHeight);
-//            slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            slide.setPower(1.0);
-//        } else if (Math.abs(slidePower) > 0.2) {
-//            slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//            // Check upper and lower limits
-//            if ((currentPosition >= 2750 && slidePower > 0) ||
-//                    (currentPosition <= 3 && slidePower < 0)) {
-//                slide.setPower(0.01); // Hold position
-//            } else {
-//                slide.setPower(slidePower * power);
-//            }
-//        } else {
-//            slide.setPower(0);
-//
-//        }
-
-
-//        if (gamepad2.y){
-//            slide.setTargetPosition(chamberHeight);
-//            slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            slidePower = 1.0;
-//        } else if (gamepad2.a){
-//            slide.setTargetPosition(grabFromWallHeight);
-//            slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            slidePower = 1.0;
-//        } else if (Math.abs(slidePower) > 0.2) {
-//            slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//            if(slidePower>0.2){
-//                slide.setTargetPosition(chamberHeight);
-//                slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            } else if (slidePower < -0.2){
-//                slide.setTargetPosition(grabFromWallHeight);
-//                slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            }
-//        } else {
-//            slide.setPower(slidePower);
-//            if(slide.getCurrentPosition()==slide.getTargetPosition())
-//                slidePower = -gamepad1.left_stick_y;
-//
-//        }
-    }
 }

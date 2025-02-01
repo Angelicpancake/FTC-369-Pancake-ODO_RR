@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.autoCode;
 
 // RR-specific imports
 
@@ -6,17 +6,12 @@ import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.config.Config;
 
-import java.util.*;
-import java.math.*;
-
 
 //non rr imports
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.PoseVelocity2d;
-import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.TranslationalVelConstraint;
@@ -30,10 +25,12 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.MecanumDrive;
+
 
 @Config
-@Autonomous(name = "369 FINAL AUTO COMP CODE ", group = "Autonomous")
-public class MalekAuto extends LinearOpMode {
+@Autonomous(name = "Joshua Autonomous 1/15", group = "Autonomous")
+public class JoshuaAuto extends LinearOpMode {
 
     private int chamberHeight = 2115;
     private int clipOnChamberHeight = 790;
@@ -333,137 +330,65 @@ public class MalekAuto extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Pose2d startPose1 = new Pose2d(10, -62, Math.toRadians(270));
         MecanumDrive drive = new MecanumDrive(hardwareMap, startPose1);
-
-
-
-
         Slide slide = new Slide(hardwareMap);
         SlideClaw slideClaw = new SlideClaw(hardwareMap);
-
         Arm arm = new Arm(hardwareMap);
         ArmClaw armClaw1 = new ArmClaw(hardwareMap);
 
+        /*
+            The Autonomous
+         */
 
+        //specimen #1
+        TrajectoryActionBuilder forwardDrive1 = drive.actionBuilder(startPose1)
+                .strafeTo(new Vector2d(-4,-20)); //go to specimen
 
-        // current path - go to meep meep file to adjust it and test it
-        // current math fromm meep meep visualizer, adjust as needed inmeep meep file, then test, than use here
-//        TrajectoryActionBuilder part1 = drive.actionBuilder(startPose1)
-//                .lineToY(-33.5)  // Drive forward
-//                // attach specimen
-//                .lineToY(-40)  // Move back a bit
-//
-//
-//
-//                //spline to go to the three smaples
-//                .setTangent(0)
-//                .lineToX(20)
-//                .splineToConstantHeading(new Vector2d(45, -9), Math.PI/4)
-//
-//
-//
-//                //push first sample down to obervation zone
-//                .setTangent(Math.PI/2)
-//                .lineToY(-52)
-//
-//
-//                // go to second sample
-//                .lineToY(-12)
-//                .setTangent(0)
-//                .lineToX(56)
-//                .setTangent(Math.PI/2)
-//                .lineToY(-52)
-//
-//
-//                //diagonal to get out of obervation zone and get ready to recive specimen
-//                .setTangent(-0.25)
-//                .lineToXLinearHeading(38,Math.PI/2)
-//
-//
-//                //clip trial #1
-//                .setTangent(Math.PI/2)
-//                .lineToYLinearHeading(-60, Math.PI/2)
-//                .strafeToLinearHeading(new Vector2d(7, -33.5), 3*Math.PI/2)
-//                .strafeToLinearHeading(new Vector2d(38,-60), Math.PI/2)
-//
-//                //clip #2
-//                .strafeToLinearHeading(new Vector2d(4, -33.5), 3*Math.PI/2)
-//                .strafeToLinearHeading(new Vector2d(38,-60), Math.PI/2)
-//
-//                //clip #3
-//                .strafeToLinearHeading(new Vector2d(1, -33.5), 3*Math.PI/2)
-//
-//                //park - enable if extra time left
-//                //.setTangent(2.6)
-//                //.lineToXLinearHeading(48, Math.PI/2)
-//
-//                .build());
+        TrajectoryActionBuilder moveBack1 = forwardDrive1.endTrajectory().fresh()
+            .lineToY(-40); //move away from hang
 
-
-        // actions that need to happen on init; for instance, a claw tightening.
-        //:TODO add any actions that need to happen on init
-
-        // move to chamber and clip #1
-//        TrajectoryActionBuilder TestTurning = drive.actionBuilder(startPose1)
-//                .turnTo(new Rotation2d(drive.getPoseEstimate().heading.toDouble(), Math.toRadians(180)));
-
-        TrajectoryActionBuilder forawrdDrive1 = drive.actionBuilder(startPose1)
-                .strafeTo(new Vector2d(-10,-23));
-
-        // move back so we can strafe to samples
-        TrajectoryActionBuilder moveBack1 = forawrdDrive1.endTrajectory().fresh()//drive.actionBuilder(new Pose2d(-2,-26.5,3*Math.PI/2))
-                .lineToY(-40);
-
-        TrajectoryActionBuilder moveRightThenMoveForward= moveBack1.endTrajectory().fresh()//drive.actionBuilder(new Pose2d(-2,-45,3*Math.PI/2))
+        //push pieces
+        TrajectoryActionBuilder pushing = moveBack1.endTrajectory().fresh()
                 .strafeToConstantHeading(new Vector2d(54,-40))// move right
 
-                .strafeToConstantHeading(new Vector2d(58,0))// move forward
+                .strafeToConstantHeading(new Vector2d(54,1))// move forward
 
                 .strafeToConstantHeading(new Vector2d(70,0))// move right and a bit back
 
                 .strafeToConstantHeading(new Vector2d(70,-45), new TranslationalVelConstraint(400))// push the first specimen down
 
-                .strafeToConstantHeading(new Vector2d(70,2), new TranslationalVelConstraint(400))// go back up
+                .strafeToConstantHeading(new Vector2d(70,1), new TranslationalVelConstraint(400))// go back up
 
-                .strafeToConstantHeading(new Vector2d(86,0))// allign to the second sample
+                .strafeToConstantHeading(new Vector2d(86,0))// align to the second sample
 
                 .strafeToConstantHeading(new Vector2d(86,-45), new TranslationalVelConstraint(400)); // push the second down
 
-        // includecode below if we have time to grab the third one
+        //grab specimen wall#1
+        TrajectoryActionBuilder goToGrabFirst = pushing.endTrajectory().fresh()
+                .turn(Math.toRadians(270)); //change it to go 270 first then move down
 
-//                .strafeToConstantHeading(new Vector2d(80,0),new TranslationalVelConstraint(400));
-
-
-
-//                .strafeToConstantHeading(new Vector2d(95,0)) // go back up and to the right
-//
-//                .strafeToConstantHeading(new Vector2d(95,-48), new TranslationalVelConstraint(400));  // ush the third down
-
-
-        TrajectoryActionBuilder goToGrabFirst = moveRightThenMoveForward.endTrajectory().fresh()//drive.actionBuilder(new Pose2d(60,-50,3*Math.PI/2))
-                .strafeToConstantHeading(new Vector2d(60, -33)) //get out of obervation
-//
-                .strafeToLinearHeading(new Vector2d(47, -76), Math.toRadians(85));// goto grab the first one while turning
-
-
+        //clip specimen wall#1
         TrajectoryActionBuilder goToClipFirst = goToGrabFirst.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(10,-28), Math.toRadians(270))
-                .strafeToConstantHeading(new Vector2d(18,-25));     //less forward
+                .strafeToConstantHeading(new Vector2d(10,-28))
+                .strafeToConstantHeading(new Vector2d(14,-13));
 
+        //grab specimen wall#2
         TrajectoryActionBuilder goToGrabSecond = drive.actionBuilder(new Pose2d(0,-25,3*Math.PI/2))
-                .strafeToLinearHeading(new Vector2d(55, -65), Math.toRadians(85))
-                .strafeToConstantHeading(new Vector2d(58, -74));//
+                .setTangent(Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(60, -65), Math.toRadians(90))
+                .strafeToConstantHeading(new Vector2d(63, -69));//
+
 
         TrajectoryActionBuilder goToClipSecond = drive.actionBuilder(new Pose2d(37,-60,Math.PI/2))
-                .strafeToLinearHeading(new Vector2d(6, -40), Math.toRadians(270))
-                .strafeToConstantHeading(new Vector2d(5, -39)); // too far back
+                .strafeToLinearHeading(new Vector2d(6, -49), Math.toRadians(-270))
+                .strafeToConstantHeading(new Vector2d(6, -28)); // too far back
 
         TrajectoryActionBuilder goToGrabThird = drive.actionBuilder(new Pose2d(4,-25,3*Math.PI/2))
-                .strafeToLinearHeading(new Vector2d(56, -70), Math.toRadians(95))
-                .strafeToConstantHeading(new Vector2d(56, -93)); //
+                .strafeToLinearHeading(new Vector2d(52, -70), Math.toRadians(95))
+                .strafeToConstantHeading(new Vector2d(52, -91)); //
 
         TrajectoryActionBuilder goToClipThird = drive.actionBuilder(new Pose2d(37,-60,Math.PI/2))
                 .strafeToLinearHeading(new Vector2d(0, -50), Math.toRadians(270))
-                .strafeToConstantHeading(new Vector2d(5, -35));//
+                .strafeToConstantHeading(new Vector2d(1, -27));//
 
 
 //        TrajectoryActionBuilder goToGrabFourth = drive.actionBuilder(new Pose2d(8,-25,3*Math.PI/2))
@@ -518,7 +443,7 @@ public class MalekAuto extends LinearOpMode {
         ParallelAction GoToClipZero = new ParallelAction(
                 // new SequentialAction(
                 slide.slideUp(),
-                forawrdDrive1.build(),
+                forwardDrive1.build(),
                 //armClaw1.openArmClaw(),
                 slideClaw.closeSlideClaw()
 
@@ -537,7 +462,7 @@ public class MalekAuto extends LinearOpMode {
 //        );
 
         SequentialAction pushFirstTwoSamples = new SequentialAction(
-                moveRightThenMoveForward.build()
+                pushing.build()
 
         );
 

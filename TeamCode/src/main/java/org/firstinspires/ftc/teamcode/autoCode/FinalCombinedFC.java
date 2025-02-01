@@ -1,10 +1,8 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.autoCode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -12,13 +10,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-@TeleOp(name="current fc with old intake")
+@TeleOp(name="joshua final fc")
 public class FinalCombinedFC extends OpMode {
     private DcMotor backLeft;
     private DcMotor backRight;
     private DcMotor frontLeft;
     private DcMotor frontRight;
     private ElapsedTime timer;
+    private static final double ARM_POWER_SCALE = 0.6;
 
     private double DRIVE_POWER_VARIABLE = 1;
     private double pow = 0.5;
@@ -44,7 +43,7 @@ public class FinalCombinedFC extends OpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     // Arm position constants
-    private static final double ARM_POWER_SCALE = 0.7;
+
     private static final int ARM_LOWER_LIMIT = -5000;
     private static final int ARM_UPPER_LIMIT = 7000;
 
@@ -112,6 +111,24 @@ public class FinalCombinedFC extends OpMode {
         telemetry.update();
     }
 
+
+    private void handleArmControl() {
+        int currentPosition = arm.getCurrentPosition();
+
+
+        double armPower = -gamepad2.left_stick_y * ARM_POWER_SCALE;
+
+        // Add position limits
+        if ((currentPosition >= ARM_UPPER_LIMIT && armPower > 0) ||
+                (currentPosition <= ARM_LOWER_LIMIT && armPower < 0)) {
+            armPower = 0;
+        } else if (gamepad2.b) {
+            armPower = 0.05;
+        }
+
+        arm.setPower(armPower);
+    }
+
     @Override
     public void loop() {
         telemetry.addData("slidePosition", slide.getCurrentPosition());
@@ -144,7 +161,6 @@ public class FinalCombinedFC extends OpMode {
 
 
 
-        handleArmControl();
 
 
         handleArmClawControl();
@@ -157,6 +173,8 @@ public class FinalCombinedFC extends OpMode {
         handleWrist();
 
         handleSlowDrivingMode();
+
+        handleArmControl();
 
         if(gamepad1.x){
             imu.resetYaw();
@@ -186,20 +204,7 @@ public class FinalCombinedFC extends OpMode {
         telemetry.update();
     }
 
-    private void handleArmControl() {
-        int currentPosition = arm.getCurrentPosition();
 
-
-        double armPower = -gamepad2.left_stick_y * ARM_POWER_SCALE;
-
-        // Add position limits
-        if ((currentPosition >= ARM_UPPER_LIMIT && armPower > 0) ||
-                (currentPosition <= ARM_LOWER_LIMIT && armPower < 0)) {
-            armPower = 0;
-        }
-
-        arm.setPower(armPower);
-    }
 
     private void handleArmClawControl() {
         // Open claw with left trigger, close with right trigger on gamepad2
@@ -285,6 +290,7 @@ public class FinalCombinedFC extends OpMode {
         slide.setPower(0);
     }
 
+
     private void handleLinearSlideControl() {
         // Use right joystick for linear slide control
         double power = 1;
@@ -306,12 +312,11 @@ public class FinalCombinedFC extends OpMode {
             slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             slide.setPower(1.0);
         } else if (Math.abs(slidePower) > 0.2) {
-            slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            slide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             // Check upper and lower limits
-            if ((currentPosition >= 2750 && slidePower > 0) ||
-                    (currentPosition <= 3 && slidePower < 0)) {
+            if (currentPosition >= 2750)
                 slide.setPower(0.01); // Hold position
-            } else {
+             else {
                 slide.setPower(slidePower * power);
             }
         } else {

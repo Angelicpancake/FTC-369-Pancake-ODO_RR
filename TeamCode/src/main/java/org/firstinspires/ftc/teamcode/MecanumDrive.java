@@ -41,6 +41,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.teamcode.autoCode.Drawing;
 import org.firstinspires.ftc.teamcode.messages.DriveCommandMessage;
 import org.firstinspires.ftc.teamcode.messages.MecanumCommandMessage;
 import org.firstinspires.ftc.teamcode.messages.MecanumLocalizerInputsMessage;
@@ -58,9 +59,9 @@ public final class MecanumDrive {
         // TODO: fill in these values based on
         //   see https://ftc-docs.firstinspires.org/en/latest/programming_resources/imu/imu.html?highlight=imu#physical-hub-mounting
         public RevHubOrientationOnRobot.LogoFacingDirection logoFacingDirection =
-                RevHubOrientationOnRobot.LogoFacingDirection.UP;
+                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT;
         public RevHubOrientationOnRobot.UsbFacingDirection usbFacingDirection =
-                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
+                RevHubOrientationOnRobot.UsbFacingDirection.UP;
 
         /*
         NEW TUNING VALUES:
@@ -69,14 +70,14 @@ public final class MecanumDrive {
         LAteral - lateral inches per tick    120/3630
          */
         // drive model parameters
-        public double inPerTick = 120/4000.0;
-        public double lateralInPerTick = 120/3630.0;
-        public double trackWidthTicks = 981.7946898068308;
+        public double inPerTick = 48/1990.75;
+        public double lateralInPerTick = 48/1904.75;
+        public double trackWidthTicks = 998.4975241159067;
 
         // feedforward parameters (in tick units)
-        public double kS = 1.2361267609578297/2;
-        public double kV = 0.004097405969963438;
-        public double kA = 0.00001;
+        public double kS = 0.8600056688050373;
+        public double kV = 0.004152459496252876;
+        public double kA = 0.001;
 
         // path profile parameters (in inches)
         public double maxWheelVel = 250;
@@ -88,9 +89,9 @@ public final class MecanumDrive {
         public double maxAngAccel = Math.PI;
 
         // path controller gains
-        public double axialGain = 1.0;
-        public double lateralGain = 5.0;
-        public double headingGain = 1.0; // shared with turn
+        public double axialGain = 5.0;
+        public double lateralGain = 2.0;
+        public double headingGain = 3.0; // shared with turn
 
         public double axialVelGain = 0.0;
         public double lateralVelGain = 0.0;

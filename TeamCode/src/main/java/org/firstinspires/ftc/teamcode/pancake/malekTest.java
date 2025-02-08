@@ -2,13 +2,12 @@ package org.firstinspires.ftc.teamcode.pancake;
 
 //roadrunner imports
 import androidx.annotation.NonNull;
-import com.acmerobotics.dashboard.config.Config;
+
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
-import com.acmerobotics.roadrunner.Trajectory;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.Vector2d;
@@ -17,18 +16,13 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 //ftc imports
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
-import dalvik.system.DelegateLastClassLoader;
-
-@Autonomous(name = "PancakeRight-AutoChanges", group = "Autonomous")
-public class JoshuaRen1_29 extends LinearOpMode {
+@Autonomous(name = "Malek auto.......", group = "Autonomous")
+public class malekTest extends LinearOpMode {
     public class BridgeArmClaw {
         private Servo bridge, sampleClaw, specimenArm, specimenClaw, rail;
         private ElapsedTime timer = new ElapsedTime();
@@ -68,13 +62,14 @@ public class JoshuaRen1_29 extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
 
                 if (!isReset) {
+                    timer.reset();
                     specimenArm.setPosition(1);//set to reset value (back)
                     rail.setPosition(0); //set to reset value (down)
-                    timer.reset();
+
                     isReset = true;
                 }
 
-                if (timer.seconds() > 0.5){
+                if (timer.seconds() > 0.8){
                     isReset = false;
                     return false;//exit after reset
                 }
@@ -198,55 +193,56 @@ public class JoshuaRen1_29 extends LinearOpMode {
                 .splineToConstantHeading(new Vector2d(60, 2), Math.toRadians(0))
                 .strafeToConstantHeading(new Vector2d(67, -38))
                 .splineToConstantHeading(new Vector2d(35, -35), Math.toRadians(240)); */
-                .strafeToConstantHeading(new Vector2d(50, -10))
-                .strafeToConstantHeading(new Vector2d(50, -48), new TranslationalVelConstraint(200))
-                .strafeToConstantHeading(new Vector2d(50, -10))
-                .strafeToConstantHeading(new Vector2d(60, -10))
-                .strafeToConstantHeading(new Vector2d(60, -48), new TranslationalVelConstraint(200))
-                .strafeToConstantHeading(new Vector2d(60, -10))
-                .strafeToConstantHeading(new Vector2d(68, -10))
-                .strafeToConstantHeading(new Vector2d(68, -37), new TranslationalVelConstraint(200))
-                .splineToConstantHeading(new Vector2d(33, -52), Math.toRadians(240));
+                .strafeToConstantHeading(new Vector2d(58, -10))
+                .strafeToConstantHeading(new Vector2d(58, -51), new TranslationalVelConstraint(200))
+                .strafeToConstantHeading(new Vector2d(58, -10))
+                .strafeToConstantHeading(new Vector2d(64, -10))
+                .strafeToConstantHeading(new Vector2d(64, -51), new TranslationalVelConstraint(200))
+                .strafeToConstantHeading(new Vector2d(64, -10))
+                .strafeToConstantHeading(new Vector2d(72, -10))
+                .strafeToConstantHeading(new Vector2d(72, -35), new TranslationalVelConstraint(200))//push third
+                .strafeToConstantHeading(new Vector2d(22, -54));//grab first
 
 
         //step 1
         TrajectoryActionBuilder specimen1Traj = pushSamplesTraj.endTrajectory().fresh()
-                .strafeToConstantHeading(new Vector2d(-17, -20));
+                .strafeToConstantHeading(new Vector2d(-37, -20));
 
         //step 2
         TrajectoryActionBuilder specimen2TrajBack = specimen1Traj.endTrajectory().fresh()
-                .strafeToConstantHeading(new Vector2d(36, -43))
-                .strafeToConstantHeading(new Vector2d(36, -52), new TranslationalVelConstraint(15));
+                .strafeToConstantHeading(new Vector2d(34, -43))
+                .strafeToConstantHeading(new Vector2d(34, -52), new TranslationalVelConstraint(15));
         TrajectoryActionBuilder specimen2TrajHang = specimen2TrajBack.endTrajectory().fresh()
-                .strafeToConstantHeading(new Vector2d(-15, -19));
+                .strafeToConstantHeading(new Vector2d(-30, -19));
 
         //step 3
         TrajectoryActionBuilder specimen3TrajBack = specimen2TrajHang.endTrajectory().fresh()
-                .strafeToConstantHeading(new Vector2d(36, -43))
-                .strafeToConstantHeading(new Vector2d(36, -52), new TranslationalVelConstraint(15));
+                .strafeToConstantHeading(new Vector2d(34, -43))
+                .strafeToConstantHeading(new Vector2d(34, -53), new TranslationalVelConstraint(15));
 
         TrajectoryActionBuilder specimen3TrajHang = specimen3TrajBack.endTrajectory().fresh()
-                .strafeToConstantHeading(new Vector2d(-13, -19));
+                .strafeToConstantHeading(new Vector2d(-28, -19));
 
         //step 4
         TrajectoryActionBuilder specimen4TrajBack = specimen3TrajHang.endTrajectory().fresh()
-                .strafeToConstantHeading(new Vector2d(36, -43))
-                .strafeToConstantHeading(new Vector2d(36, -52), new TranslationalVelConstraint(15));
+                // .strafeToConstantHeading(new Vector2d(-28, -24))
+                .strafeToConstantHeading(new Vector2d(34, -43))
+                .strafeToConstantHeading(new Vector2d(34, -54), new TranslationalVelConstraint(15));
 
         TrajectoryActionBuilder specimen4TrajHang = specimen4TrajBack.endTrajectory().fresh()
-                .strafeToConstantHeading(new Vector2d(-11, -19));
+                .strafeToConstantHeading(new Vector2d(-28, -19));
 
         //step 5
         TrajectoryActionBuilder specimen5TrajBack = specimen4TrajHang.endTrajectory().fresh()
-                .strafeToConstantHeading(new Vector2d(36, -43))
-                .strafeToConstantHeading(new Vector2d(36,-52), new TranslationalVelConstraint(15));
+                .strafeToConstantHeading(new Vector2d(34, -43))
+                .strafeToConstantHeading(new Vector2d(34,-54), new TranslationalVelConstraint(15));
 
         TrajectoryActionBuilder specimen5TrajHang = specimen5TrajBack.endTrajectory().fresh()
-                .strafeToConstantHeading(new Vector2d(-9, -18));
+                .strafeToConstantHeading(new Vector2d(-26, -18));
 
         //park
         TrajectoryActionBuilder parkTraj = specimen5TrajHang.endTrajectory().fresh()
-                .strafeToConstantHeading(new Vector2d(33, -52));
+                .strafeToConstantHeading(new Vector2d(35, -52));
 
         waitForStart();//wait until start is pressed
 

@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.LinearHeadingPath;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
+import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
@@ -24,19 +25,19 @@ public class MeepMeepRightPath {
                .strafeToConstantHeading(new Vector2d(-1, -31));*/
 
        TrajectoryActionBuilder pushSamples = myBot.getDrive().actionBuilder(initialPose)
-                    //   .strafeToConstantHeading(new Vector2d(26, -42))
-                    //   .splineToConstantHeading(new Vector2d(43, -12), Math.toRadians(30))
-                       .splineToConstantHeading(new Vector2d(40, -13), Math.toRadians(73))
-                       .strafeToConstantHeading(new Vector2d(43, -50))
-                       .splineToConstantHeading(new Vector2d(53, -13), Math.toRadians(10))
-                       .strafeToConstantHeading(new Vector2d(53,-50))
-                       .splineToConstantHeading(new Vector2d(61, -13), Math.toRadians(10))
-                       .strafeToConstantHeading(new Vector2d(61, -50))
-                       .splineToConstantHeading(new Vector2d(35, -62), Math.toRadians(240));
-                       //.strafeToConstantHeading(new Vector2d(38, -65));
+                .strafeToConstantHeading(new Vector2d(59, -10))
+                .strafeToConstantHeading(new Vector2d(59, -51), new TranslationalVelConstraint(200))
+                .strafeToConstantHeading(new Vector2d(59, -10))
+                .strafeToConstantHeading(new Vector2d(65, -10))
+                .strafeToConstantHeading(new Vector2d(65, -51), new TranslationalVelConstraint(200))
+                .strafeToConstantHeading(new Vector2d(65, -10))
+                .strafeToConstantHeading(new Vector2d(74, -10))
+                .strafeToConstantHeading(new Vector2d(74, -37), new TranslationalVelConstraint(200))
+                .strafeToConstantHeading(new Vector2d(32, -54));
 
 
-       TrajectoryActionBuilder specimen1 = pushSamples.endTrajectory().fresh()
+
+        TrajectoryActionBuilder specimen1 = pushSamples.endTrajectory().fresh()
                      //  .strafeToConstantHeading(new Vector2d(38, -65))
                         .strafeToConstantHeading(new Vector2d(-5, -31));
 

@@ -51,7 +51,7 @@ public class JoshuaRen1_28 extends OpMode {
         imu = hardwareMap.get(IMU.class, "imu");
         //initializing the imu
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD,
                 RevHubOrientationOnRobot.UsbFacingDirection.UP));
         //adding the orientation of the imu for accurate calculations
         imu.initialize(parameters);

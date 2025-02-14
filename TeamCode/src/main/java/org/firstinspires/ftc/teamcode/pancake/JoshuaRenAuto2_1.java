@@ -27,7 +27,7 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 import dalvik.system.DelegateLastClassLoader;
 
-@Autonomous(name = "Chesapeake Auto", group = "Autonomous")
+@Autonomous(name = "Ch Auto", group = "Autonomous")
 public class JoshuaRenAuto2_1 extends LinearOpMode {
     public class BridgeArmClaw {
         private Servo bridge, sampleClaw, specimenArm, specimenClaw, rail;
@@ -43,7 +43,7 @@ public class JoshuaRenAuto2_1 extends LinearOpMode {
             rail = hardwareMap.get(Servo.class, "rail");
 
             specimenClaw.setPosition(0);//start SpecimenClaw open
-            specimenArm.setPosition(1);
+            specimenArm.setPosition(0);
             rail.setPosition(0);//rail set down
         }//Constructor
 
@@ -69,7 +69,7 @@ public class JoshuaRenAuto2_1 extends LinearOpMode {
 
                 if (!isReset) {
                     timer.reset();
-                    specimenArm.setPosition(1);//set to reset value (back)
+                    specimenArm.setPosition(0);//set to reset value (back)
                     rail.setPosition(0); //set to reset value (down)
 
                     isReset = true;
@@ -140,7 +140,7 @@ public class JoshuaRenAuto2_1 extends LinearOpMode {
                 /*rail should go up, swing specimenArm to position
                 rail => 0.5; sA => 0*/
                 rail.setPosition(0.45);
-                specimenArm.setPosition(0);
+                specimenArm.setPosition(1);
                 telemetry.addData("rail", rail.getPosition());
                 //change these positions if needed
 
@@ -200,32 +200,32 @@ public class JoshuaRenAuto2_1 extends LinearOpMode {
                 .splineToConstantHeading(new Vector2d(60, 2), Math.toRadians(0))
                 .strafeToConstantHeading(new Vector2d(67, -38))
                 .splineToConstantHeading(new Vector2d(35, -35), Math.toRadians(240)); */
-                .strafeToConstantHeading(new Vector2d(58, -8))
-                .strafeToConstantHeading(new Vector2d(58, -51), new TranslationalVelConstraint(200))
-                .strafeToConstantHeading(new Vector2d(58, -12))
-                .strafeToConstantHeading(new Vector2d(64, -12))
+                .strafeToConstantHeading(new Vector2d(60, -7))
+                .strafeToConstantHeading(new Vector2d(61, -51), new TranslationalVelConstraint(200))
+                .strafeToConstantHeading(new Vector2d(58, -13))
+                .strafeToConstantHeading(new Vector2d(64, -13))
                 .strafeToConstantHeading(new Vector2d(64, -51), new TranslationalVelConstraint(200))
-                .strafeToConstantHeading(new Vector2d(64, -12))
-                .strafeToConstantHeading(new Vector2d(74, -12))
+                .strafeToConstantHeading(new Vector2d(64, -14))
+                .strafeToConstantHeading(new Vector2d(72, -14))
                 .strafeToConstantHeading(new Vector2d(74, -37), new TranslationalVelConstraint(200))
-                .splineToConstantHeading(new Vector2d(22, -54), Math.toRadians(240));
+                .splineToConstantHeading(new Vector2d(17, -53), Math.toRadians(240));
 
 
         //step 1
         TrajectoryActionBuilder specimen1Traj = pushSamplesTraj.endTrajectory().fresh()
-                .strafeToConstantHeading(new Vector2d(-37, -20));
+                .strafeToConstantHeading(new Vector2d(-46, -17));
 
         //step 2
         TrajectoryActionBuilder specimen2TrajBack = specimen1Traj.endTrajectory().fresh()
-                .strafeToConstantHeading(new Vector2d(33, -43))
-                .strafeToConstantHeading(new Vector2d(33, -52), new TranslationalVelConstraint(15));
+                .strafeToConstantHeading(new Vector2d(34, -51));
+                //.strafeToConstantHeading(new Vector2d(33, -52), new TranslationalVelConstraint(15));
         TrajectoryActionBuilder specimen2TrajHang = specimen2TrajBack.endTrajectory().fresh()
-                .strafeToConstantHeading(new Vector2d(-30, -19));
+                .strafeToConstantHeading(new Vector2d(-33, -19));
 
         //step 3
         TrajectoryActionBuilder specimen3TrajBack = specimen2TrajHang.endTrajectory().fresh()
-                .strafeToConstantHeading(new Vector2d(33, -43))
-                .strafeToConstantHeading(new Vector2d(33, -53), new TranslationalVelConstraint(15));
+                .strafeToConstantHeading(new Vector2d(34, -51));
+                //.strafeToConstantHeading(new Vector2d(33, -53), new TranslationalVelConstraint(15));
 
         TrajectoryActionBuilder specimen3TrajHang = specimen3TrajBack.endTrajectory().fresh()
                 .strafeToConstantHeading(new Vector2d(-28, -19));
@@ -233,23 +233,23 @@ public class JoshuaRenAuto2_1 extends LinearOpMode {
         //step 4
         TrajectoryActionBuilder specimen4TrajBack = specimen3TrajHang.endTrajectory().fresh()
                // .strafeToConstantHeading(new Vector2d(-28, -24))
-                .strafeToConstantHeading(new Vector2d(33, -43))
-                .strafeToConstantHeading(new Vector2d(33, -54), new TranslationalVelConstraint(15));
+                .strafeToConstantHeading(new Vector2d(34, -51));
+              //  .strafeToConstantHeading(new Vector2d(33, -54), new TranslationalVelConstraint(15));
 
         TrajectoryActionBuilder specimen4TrajHang = specimen4TrajBack.endTrajectory().fresh()
                 .strafeToConstantHeading(new Vector2d(-28, -19));
 
         //step 5
         TrajectoryActionBuilder specimen5TrajBack = specimen4TrajHang.endTrajectory().fresh()
-                .strafeToConstantHeading(new Vector2d(33, -43))
-                .strafeToConstantHeading(new Vector2d(33,-54), new TranslationalVelConstraint(15)); //34
+                .strafeToConstantHeading(new Vector2d(33, -51));
+            //    .strafeToConstantHeading(new Vector2d(33,-54), new TranslationalVelConstraint(15)); //34
 
         TrajectoryActionBuilder specimen5TrajHang = specimen5TrajBack.endTrajectory().fresh()
                 .strafeToConstantHeading(new Vector2d(-26, -18));
 
         //park
         TrajectoryActionBuilder parkTraj = specimen5TrajHang.endTrajectory().fresh()
-                .strafeToConstantHeading(new Vector2d(35, -52));
+                .strafeToConstantHeading(new Vector2d(35, -51));
 
         waitForStart();//wait until start is pressed
 
@@ -364,7 +364,11 @@ public class JoshuaRenAuto2_1 extends LinearOpMode {
 
         // Park
         SequentialAction park = new SequentialAction(
-                parkTraj.build()
+                new ParallelAction(
+                        bac.resetRailArm(),
+                        parkTraj.build()
+                )
+
         );
 
         //run actions
